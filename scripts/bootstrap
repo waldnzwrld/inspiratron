@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+# run poetry install to install all dependencies
+
+poetry install

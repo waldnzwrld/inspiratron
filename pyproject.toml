@@ -1,0 +1,18 @@
+[project]
+name = "quotebot"
+version = "0.0.1"
+description = "An agentic bot to provide a daily quote based on current affairs"
+authors = [
+    {name = "Walden Bodtker", email = "waldnzwrld@gmail.com"}
+    ]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+project.optional-dependencies = []
+
+[tool.poetry]
+package-mode = false
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
