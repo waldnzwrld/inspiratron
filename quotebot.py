@@ -39,18 +39,14 @@ if 'TOOL' in generated_text:
     if 'fetch_quote' in tool_call:
         quote = fetch_quote()
 
-print(f"quote: {quote[1]} by {quote[0]}")
-combined_prompt = f"""
-You are an AI who's purpose is to provide a summary of the following information as an informative and inspirational way to start the day.
+combined_prompt = f"""Write a short morning brief (2-3 sentences) that incorporates this quote: "{quote[1]}" by {quote[0]}
 
-The information available to you is:
-    quote: {quote[1]} by {quote[0]}
+The brief should be friendly and inspirational. Start directly with the message, do not include greetings or introductions.
 
-Please return a morning brief in a friendly manner using the information available to you, be sure to include the quote and author in your response.
-Morning Brief:
+Brief:
 """
 
 
-generated_text = generate_response(combined_prompt, 100, 0.7, 0.9, 1.2)
+generated_text = generate_response(combined_prompt, 200, 0.7, 0.9, 1.2)
 print(generated_text)
 
