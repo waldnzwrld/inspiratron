@@ -3,5 +3,5 @@
 set -e
 
 # run poetry install to install all dependencies
-
+poetry lock
 poetry install
