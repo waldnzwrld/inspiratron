@@ -1,5 +1,5 @@
 [project]
-name = "quotebot"
+name = "inspiratron"
 version = "0.0.1"
 description = "An agentic bot to provide a daily quote based on current affairs"
 authors = [

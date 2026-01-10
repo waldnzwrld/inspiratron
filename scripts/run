@@ -7,4 +7,5 @@ set -a
 source .env
 set +a
 
-poetry run python -m quotebot
+poetry run python -m inspiratron
+

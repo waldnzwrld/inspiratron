@@ -1,5 +1,6 @@
-An agentic service that leverages https://openlibrary.org/developers/api and https://www.penguinrandomhouse.biz/webservices/rest/ to look up authors and search their body of work for relevant contextual passages.
+An agentic service that leverages multiple api's and news sources to provide inspirational messaging relevant to the current state of the world. 
 
-This should use Googles Gemma 2b llm to process the information and output a response. 
+https://openlibrary.org/developers/api and https://www.penguinrandomhouse.biz/webservices/rest/ to look up authors and search their body of work for relevant contextual passages.
+
 
 
