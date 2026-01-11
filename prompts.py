@@ -35,16 +35,16 @@ def generate_prompt_from_tools(tool_text):
         if 'fetch_quote' in tool_call:
             quote = fetch_quote()
 
-    combined_prompt = f"""Write a short morning brief (2-3 sentences) that incorporates this quote: "{quote[1]}" by {quote[0]}
+    combined_prompt = f"""Quote: "The only way to do great work is to love what you do." - Steve Jobs
+Brief: Steve Jobs reminds us that passion fuels excellence. When we love our work, effort becomes joy and greatness follows naturally.
 
-    The brief should be friendly and inspirational. Start directly with the message, do not include greetings or introductions.
-
-    Brief:
-    """
+Quote: "{quote[1]}" - {quote[0]}
+Brief:"""
 
     return combined_prompt
 
 def generate_judgement_prompt(prompt, response):
+    #DO NOT TOUCH THIS, ONLY MAKE CHANGES TO OTHER PROMPTS
     return f"""Given a prompt and response, decide if the response correctly follows the prompt's instructions.
 
 Prompt: {prompt}

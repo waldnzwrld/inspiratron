@@ -9,9 +9,9 @@ tool_text = generate_response(tool_prompt, 20, 0.2, 0.9, 1.2, ["]", "\n"])
 
 combined_prompt = generate_prompt_from_tools(tool_text)
 
-generated_text = generate_response(combined_prompt, 200, 0.7, 0.9, 1.2)
-if not judge_response(combined_prompt, generated_text ):
-    generated_text = generate_response(combined_prompt, 200, 0.7, 0.9, 1.2)
+generated_text = generate_response(combined_prompt, 75, 0.7, 0.9, 1.2, ["\n\n", "Quote:"])
+if not judge_response(combined_prompt, generated_text):
+    generated_text = generate_response(combined_prompt, 75, 0.7, 0.9, 1.2, ["\n\n", "Quote:"])
 
 print(generated_text)
 
