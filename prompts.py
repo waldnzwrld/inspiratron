@@ -1,31 +1,29 @@
 
 from tool_calls import fetch_quote, fetch_news_headlines
 def initial_prompt(input_text: str) -> str:
-    return f"""You are an AI assistant with access to tools. When you need to use a tool, respond with exactly one tool call in this format:
-    [TOOL: tool_name(params)]
+    return f"""You are an assistant that responds with exactly one tool call.
 
 Available tools:
-    - fetch_quote: Fetches a random quote, there are no params for this tool
-    - fetch_headlines: Fetches the top news headlines for the US, there are no params for this tool
+- fetch_quote(): Returns an inspirational quote
+- fetch_headlines(): Returns current news headlines
 
-Format requirement: You MUST use this exact format: [TOOL: fetch_quote()]
+Query: I need motivation
+Response: [TOOL: fetch_quote()]
 
-The word "TOOL" followed by colon and space is REQUIRED. The format is [TOOL: fetch_quote()] not [fetch_quote()] or [FETCH_QUOTE()].
+Query: What's in the news?
+Response: [TOOL: fetch_headlines()]
 
-Rules:
-    - Respond only with the tool call, no other text
-    - Use exactly the format: [TOOL: fetch_quote()]
-    - Generate exactly one tool call per query
-    - Stop immediately after the first closing bracket
+Query: Give me an inspiring quote
+Response: [TOOL: fetch_quote()]
 
-Correct: [TOOL: fetch_quote()] or [TOOL: fetch_headlines()]
-Incorrect: [fetch_quote()] or [FETCH_QUOTE()] or fetch_quote()
+Query: I'm feeling down, help me
+Response: [TOOL: fetch_quote()]
 
-The query is:
-{input_text}
+Query: Show me today's headlines
+Response: [TOOL: fetch_headlines()]
 
-Your Answer:
-    """
+Query: {input_text}
+Response:"""
 
 def generate_prompt_from_tools(tool_calls: list) -> str:
 
@@ -39,7 +37,7 @@ def generate_prompt_from_tools(tool_calls: list) -> str:
                 quote = fetch_quote()
             elif 'fetch_headlines' in tool_call:
                 headlines = fetch_news_headlines()
-                print(headlines)
+                # print(headlines)
 
     combined_prompt = f"""Quote: "The only way to do great work is to love what you do." - Steve Jobs
 Brief: Steve Jobs reminds us that passion fuels excellence. When we love our work, effort becomes joy and greatness follows naturally.

@@ -1,11 +1,10 @@
 from prompts import initial_prompt, generate_prompt_from_tools
-from task import generate_response, judge_response
+from task import generate_response, generate_tool_calls, judge_response
 
-NUM_CALLS = 3
 # get input from command line
-input_text = "Give me some inspiriational motivation to help me deal with the current state of the world"
+input_text = "Give me some inspirartion to help me navigate what is happening in the world today"
 tool_prompt = initial_prompt(input_text)
-tool_calls = [generate_response(tool_prompt, 20, 0.2, 0.9, 1.2, ["]", "\n"]) for _ in range(NUM_CALLS)]
+tool_calls = generate_tool_calls(tool_prompt)
 
 combined_prompt = generate_prompt_from_tools(tool_calls)
 

@@ -12,7 +12,7 @@ def fetch_quote() -> tuple[str, str]:
     return (data['author'], data['content'])
 
 def fetch_news_headlines() -> str:
-    url = 'https://newsapi.org/v2/top-headlines?country=us&apiKey={NEWS_API_KEY}'
+    url = f'https://newsapi.org/v2/top-headlines?country=us&apiKey={NEWS_API_KEY}'
     res = urlopen(url)
     data = json.loads(res.read().decode('utf-8'))
     return data

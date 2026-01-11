@@ -10,6 +10,7 @@ login(token)
 # Model name
 model_name = "google/gemma-2b"
 
+NUM_CALLS = 3
 # Use local files only to avoid HF API calls after initial download
 # Set FORCE_DOWNLOAD=1 in environment to force re-download
 force_download = os.environ.get("FORCE_DOWNLOAD", "0") == "1"
@@ -84,3 +85,17 @@ def judge_response(prompt: str, response: str) -> bool:
         return True
     else:
         return False
+
+def generate_tool_calls(prompt: str) -> list[str]:
+    tool_calls = []
+    for _ in range(NUM_CALLS):
+        tool_calls.append(generate_response(prompt, 10, 0.2, 0.9, 1.2, stop_strings=["]", "\n"]))
+    
+    print("Tool calls:", tool_calls)
+    for i, tool_call in enumerate(tool_calls):
+        while not judge_response(prompt, tool_call):
+            tool_call = generate_response(prompt, 10, 0.2, 0.9, 1.2, stop_strings=["]", "\n"])
+
+        tool_calls[i] = tool_call
+
+    return tool_calls
