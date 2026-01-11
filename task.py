@@ -3,6 +3,7 @@ from huggingface_hub import login
 from transformers import AutoTokenizer, AutoModelForCausalLM, StoppingCriteria, StoppingCriteriaList
 import os
 import torch
+from prompts import generate_judgement_prompt
 token = os.environ["HFT"]
 login(token)
 
@@ -76,4 +77,10 @@ def generate_response(prompt, tokens, temperature, top_p, repetition_penalty, st
     return generated_text
 
 def judge_response(response, prompt):
-    pass
+    judgement_prompt = generate_judgement_prompt(response, prompt)
+    judgement = generate_response(judgement_prompt, 2, 0.2, 0.9, 1.2)
+    print(f"Judgement: {judgement}")
+    if judgement.strip().lower() == "pass":
+        return True
+    else:
+        return False
