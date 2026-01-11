@@ -45,14 +45,14 @@ def generate_prompt_from_tools(tool_text):
     return combined_prompt
 
 def generate_judgement_prompt(prompt, response):
-    return f"""
-        You are an AI judge reviewing a prompt and response. The message is:
-            {prompt}
-        And the response is:
-            {response}
+    return f"""Given a prompt and response, decide if the response correctly follows the prompt's instructions.
 
-        If the response matches the rules set in the prompt, respond with 'pass' otherwise respond with 'fail'. Do not include any other text.
+Prompt: {prompt}
 
-        Result:
-            """
+Response: {response}
+
+If the response is too long, off-topic, or ignores the prompt's instructions, answer 'fail'.
+If the response correctly follows the prompt's instructions, answer 'pass'.
+
+Answer:"""
 
