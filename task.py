@@ -47,7 +47,7 @@ class StopOnTokens(StoppingCriteria):
         # Check if the last token is in our stop token set
         return input_ids[0][-1].item() in self.stop_token_ids
 
-def generate_response(prompt, tokens, temperature, top_p, repetition_penalty, stop_strings=[]): 
+def generate_response(prompt: str, tokens: int, temperature: float, top_p: float, repetition_penalty: float, stop_strings: list[str] =[]) -> str: 
     
     input_ids = tokenizer.encode(prompt, return_tensors="pt")
 
@@ -76,7 +76,7 @@ def generate_response(prompt, tokens, temperature, top_p, repetition_penalty, st
     generated_text = tokenizer.decode(outputs[0][input_ids.shape[1]:], skip_special_tokens=True)
     return generated_text
 
-def judge_response(prompt, response):
+def judge_response(prompt: str, response: str) -> bool:
     judgement_prompt = generate_judgement_prompt(prompt, response)
     judgement = generate_response(judgement_prompt, 5, 0.2, 0.9, 1.2, stop_strings=["\n"])
     print(f"Judgement: {judgement}")

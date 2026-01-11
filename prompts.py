@@ -1,11 +1,12 @@
 
-from rand_quote_fetcher import fetch_quote
-def initial_prompt(input_text):
+from tool_calls import fetch_quote, fetch_news_headlines
+def initial_prompt(input_text: str) -> str:
     return f"""You are an AI assistant with access to tools. When you need to use a tool, respond with exactly one tool call in this format:
     [TOOL: tool_name(params)]
 
 Available tools:
     - fetch_quote: Fetches a random quote, there are no params for this tool
+    - fetch_headlines: Fetches the top news headlines for the US, there are no params for this tool
 
 Format requirement: You MUST use this exact format: [TOOL: fetch_quote()]
 
@@ -17,7 +18,7 @@ Rules:
     - Generate exactly one tool call per query
     - Stop immediately after the first closing bracket
 
-Correct: [TOOL: fetch_quote()]
+Correct: [TOOL: fetch_quote()] or [TOOL: fetch_headlines()]
 Incorrect: [fetch_quote()] or [FETCH_QUOTE()] or fetch_quote()
 
 The query is:
@@ -26,14 +27,19 @@ The query is:
 Your Answer:
     """
 
-def generate_prompt_from_tools(tool_text):
+def generate_prompt_from_tools(tool_calls: list) -> str:
 
-    quote = ""
-    if 'TOOL' in tool_text:
-        # strip the tool name from the output
-        tool_call = tool_text.split(':')[1].strip()
-        if 'fetch_quote' in tool_call:
-            quote = fetch_quote()
+    quote = ["", ""]
+    for tool in tool_calls:
+        print("Tool: ", tool)
+        if 'TOOL' in tool:
+            # strip the tool name from the output
+            tool_call = tool.split(':')[1].strip()
+            if 'fetch_quote' in tool_call:
+                quote = fetch_quote()
+            elif 'fetch_headlines' in tool_call:
+                headlines = fetch_news_headlines()
+                print(headlines)
 
     combined_prompt = f"""Quote: "The only way to do great work is to love what you do." - Steve Jobs
 Brief: Steve Jobs reminds us that passion fuels excellence. When we love our work, effort becomes joy and greatness follows naturally.
@@ -43,7 +49,7 @@ Brief:"""
 
     return combined_prompt
 
-def generate_judgement_prompt(prompt, response):
+def generate_judgement_prompt(prompt: str, response: str) -> str:
     #DO NOT TOUCH THIS, ONLY MAKE CHANGES TO OTHER PROMPTS
     return f"""Given a prompt and response, decide if the response correctly follows the prompt's instructions.
 
