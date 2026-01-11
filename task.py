@@ -39,29 +39,28 @@ except OSError as e:
     else:
         raise
 
-# Create a custom stopping criteria class
-class StopOnTokens(StoppingCriteria):
-    def __init__(self, stop_token_ids):
-        self.stop_token_ids = stop_token_ids
+# Create a custom stopping criteria class that checks decoded text
+class StopOnStrings(StoppingCriteria):
+    def __init__(self, stop_strings, tokenizer, prompt_length):
+        self.stop_strings = stop_strings
+        self.tokenizer = tokenizer
+        self.prompt_length = prompt_length
     
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
-        # Check if the last token is in our stop token set
-        return input_ids[0][-1].item() in self.stop_token_ids
+        # Decode only the generated portion (after the prompt)
+        generated_text = self.tokenizer.decode(input_ids[0][self.prompt_length:], skip_special_tokens=True)
+        # Check if any stop string appears in the generated text
+        for stop_str in self.stop_strings:
+            if stop_str in generated_text:
+                return True
+        return False
 
 def generate_response(prompt: str, tokens: int, temperature: float, top_p: float, repetition_penalty: float, stop_strings: list[str] =[]) -> str: 
     
     input_ids = tokenizer.encode(prompt, return_tensors="pt")
+    prompt_length = input_ids.shape[1]
 
-    # Convert stop strings to token IDs
-    stop_token_ids = set()
-    for stop_str in stop_strings:
-        # Encode the stop string and get the token IDs
-        stop_tokens = tokenizer.encode(stop_str, add_special_tokens=False)
-        if stop_tokens:
-            stop_token_ids.update(stop_tokens)
-
-
-    stopping_criteria = StoppingCriteriaList([StopOnTokens(stop_token_ids)]) if stop_token_ids else None
+    stopping_criteria = StoppingCriteriaList([StopOnStrings(stop_strings, tokenizer, prompt_length)]) if stop_strings else None
 
     outputs = model.generate(
         input_ids,
