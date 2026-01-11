@@ -74,3 +74,6 @@ def generate_response(prompt, tokens, temperature, top_p, repetition_penalty, st
     # Decode only the newly generated tokens (skip the input prompt)
     generated_text = tokenizer.decode(outputs[0][input_ids.shape[1]:], skip_special_tokens=True)
     return generated_text
+
+def judge_response(response, prompt):
+    pass

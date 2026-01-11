@@ -2,6 +2,9 @@
 
 set -e
 
+# Ensure Poetry uses Python 3.13 (torch doesn't have wheels for 3.14)
+poetry env use python3.13
+
 # run poetry install to install all dependencies
 poetry lock
 poetry install
