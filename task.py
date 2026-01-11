@@ -76,9 +76,9 @@ def generate_response(prompt, tokens, temperature, top_p, repetition_penalty, st
     generated_text = tokenizer.decode(outputs[0][input_ids.shape[1]:], skip_special_tokens=True)
     return generated_text
 
-def judge_response(response, prompt):
-    judgement_prompt = generate_judgement_prompt(response, prompt)
-    judgement = generate_response(judgement_prompt, 2, 0.2, 0.9, 1.2)
+def judge_response(prompt, response):
+    judgement_prompt = generate_judgement_prompt(prompt, response)
+    judgement = generate_response(judgement_prompt, 5, 0.1, 0.9, 1.2, stop_strings=["\n", ".", " "])
     print(f"Judgement: {judgement}")
     if judgement.strip().lower() == "pass":
         return True
