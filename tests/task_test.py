@@ -26,7 +26,8 @@ def test_task_generate_response_call():
             temperature=0.5,
             top_p=0.9,
             repetition_penalty=1.2,
-            stopping_criteria=ANY
+            stop_strings=["]", "\n"],
+            tokenizer=mock_tokenizer
         )
         mock_tokenizer.decode.assert_called_once()
         assert result == "response"

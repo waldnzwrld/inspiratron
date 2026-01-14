@@ -1,6 +1,6 @@
 
 from huggingface_hub import login
-from transformers import AutoTokenizer, AutoModelForCausalLM, StoppingCriteria, StoppingCriteriaList
+from transformers import AutoTokenizer, AutoModelForCausalLM
 import os
 import torch
 from prompts import generate_judgement_prompt
@@ -39,28 +39,9 @@ except OSError as e:
     else:
         raise
 
-# Create a custom stopping criteria class that checks decoded text
-class StopOnStrings(StoppingCriteria):
-    def __init__(self, stop_strings, tokenizer, prompt_length):
-        self.stop_strings = stop_strings
-        self.tokenizer = tokenizer
-        self.prompt_length = prompt_length
-    
-    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
-        # Decode only the generated portion (after the prompt)
-        generated_text = self.tokenizer.decode(input_ids[0][self.prompt_length:], skip_special_tokens=True)
-        # Check if any stop string appears in the generated text
-        for stop_str in self.stop_strings:
-            if stop_str in generated_text:
-                return True
-        return False
-
 def generate_response(prompt: str, tokens: int, temperature: float, top_p: float, repetition_penalty: float, stop_strings: list[str] =[]) -> str: 
     
     input_ids = tokenizer.encode(prompt, return_tensors="pt")
-    prompt_length = input_ids.shape[1]
-
-    stopping_criteria = StoppingCriteriaList([StopOnStrings(stop_strings, tokenizer, prompt_length)]) if stop_strings else None
 
     outputs = model.generate(
         input_ids,
@@ -69,7 +50,8 @@ def generate_response(prompt: str, tokens: int, temperature: float, top_p: float
         temperature=temperature,
         top_p=top_p,
         repetition_penalty=repetition_penalty,
-        stopping_criteria=stopping_criteria
+        stop_strings=stop_strings if stop_strings else None,
+        tokenizer=tokenizer
     )
 
     # Decode only the newly generated tokens (skip the input prompt)
