@@ -2,15 +2,16 @@ from prompts import initial_prompt, generate_prompt_from_tools
 from task import generate_response, generate_tool_calls, judge_response
 
 # get input from command line
-input_text = "Give me some inspirartion to help me navigate what is happening in the world today"
+input_text = "Give me some inspirational motivation to help me navigate the current events in the news today"
 tool_prompt = initial_prompt(input_text)
 tool_calls = generate_tool_calls(tool_prompt)
 
 combined_prompt = generate_prompt_from_tools(tool_calls)
+print(combined_prompt)
 
-generated_text = generate_response(combined_prompt, 75, 0.7, 0.9, 1.2, ["\n\n", "Quote:"])
+generated_text = generate_response(combined_prompt, 100, 0.7, 0.9, 1.2, ["\n\n", "Quote:"])
 if not judge_response(combined_prompt, generated_text):
-    generated_text = generate_response(combined_prompt, 75, 0.7, 0.9, 1.2, ["\n\n", "Quote:"])
+    generated_text = generate_response(combined_prompt, 100, 0.7, 0.9, 1.2, ["\n\n", "Quote:"])
 
 print(generated_text)
 

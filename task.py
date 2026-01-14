@@ -79,7 +79,6 @@ def generate_response(prompt: str, tokens: int, temperature: float, top_p: float
 def judge_response(prompt: str, response: str) -> bool:
     judgement_prompt = generate_judgement_prompt(prompt, response)
     judgement = generate_response(judgement_prompt, 5, 0.2, 0.9, 1.2, stop_strings=["\n"])
-    print(f"Judgement: {judgement}")
     if judgement.strip().lower() == "pass":
         return True
     else:
@@ -90,7 +89,6 @@ def generate_tool_calls(prompt: str) -> list[str]:
     for _ in range(NUM_CALLS):
         tool_calls.append(generate_response(prompt, 10, 0.2, 0.9, 1.2, stop_strings=["]", "\n"]))
     
-    print("Tool calls:", tool_calls)
     for i, tool_call in enumerate(tool_calls):
         while not judge_response(prompt, tool_call):
             tool_call = generate_response(prompt, 10, 0.2, 0.9, 1.2, stop_strings=["]", "\n"])
