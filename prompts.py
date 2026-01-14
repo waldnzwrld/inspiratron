@@ -27,17 +27,18 @@ Response:"""
 
 def generate_prompt_from_tools(tool_calls: list) -> str:
 
-    quote = ["", ""]
+    headlines = []
+    quotes = {} 
     for tool in tool_calls:
         print("Tool: ", tool)
         if 'TOOL' in tool:
             # strip the tool name from the output
             tool_call = tool.split(':')[1].strip()
             if 'fetch_quote' in tool_call:
-                quote = fetch_quote()
+                quotes[fetch_quote()[0]] = fetch_quote()[1]
             elif 'fetch_headlines' in tool_call:
-                headlines = fetch_news_headlines()
-                # print(headlines)
+                headlines.append(fetch_news_headlines(len(headlines)))
+
 
     combined_prompt = f"""Quote: "The only way to do great work is to love what you do." - Steve Jobs
 Brief: Steve Jobs reminds us that passion fuels excellence. When we love our work, effort becomes joy and greatness follows naturally.
