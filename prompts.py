@@ -14,13 +14,7 @@ Response: [TOOL: fetch_quote()]
 Query: What's in the news?
 Response: [TOOL: fetch_headlines()]
 
-Query: Give me an inspiring quote
-Response: [TOOL: fetch_quote()]
-
-Query: I'm feeling down, help me
-Response: [TOOL: fetch_quote()]
-
-Query: Show me today's headlines
+Query: Current events
 Response: [TOOL: fetch_headlines()]
 
 Query: {input_text}
@@ -42,12 +36,14 @@ def generate_prompt_from_tools(tool_calls: list) -> str:
                     news_resp = fetch_news_headlines()
                 index = len(headlines)
                 content = news_resp[index]['content']
+                # Strip suffix before duplicate check
+                if content and '[+' in content:
+                   content = content[:content.rfind('[+')]
                 while content is None or content in headlines:
                    index += 1
                    content = news_resp[index]['content']
-
-                if content and '[+' in content:
-                   content = content[:content.rfind('[+')]
+                   if content and '[+' in content:
+                      content = content[:content.rfind('[+')]
 
                 headlines.append(content)
 

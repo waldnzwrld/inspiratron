@@ -87,12 +87,16 @@ def judge_response(prompt: str, response: str) -> bool:
 def generate_tool_calls(prompt: str) -> list[str]:
     tool_calls = []
     for _ in range(NUM_CALLS):
-        tool_calls.append(generate_response(prompt, 10, 0.2, 0.9, 1.2, stop_strings=["]", "\n"]))
+        tool_calls.append(generate_response(prompt, 10, 0.5, 0.9, 1.2, stop_strings=["]", "\n"]))
+
+    while len(set(tool_calls)) == 1:
+        tool_calls[-1] = generate_response(prompt, 10, 0.5, 0.9, 1.2, stop_strings=["]", "\n"])
     
     for i, tool_call in enumerate(tool_calls):
         while not judge_response(prompt, tool_call):
-            tool_call = generate_response(prompt, 10, 0.2, 0.9, 1.2, stop_strings=["]", "\n"])
+            tool_call = generate_response(prompt, 10, 0.5, 0.9, 1.2, stop_strings=["]", "\n"])
 
         tool_calls[i] = tool_call
+
 
     return tool_calls
