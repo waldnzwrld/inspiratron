@@ -64,9 +64,9 @@ def generate_response(prompt: str, tokens: int, temperature: float, top_p: float
 
     outputs = model.generate(
         input_ids,
-        max_new_tokens=tokens,  # Generate up to 20 new tokens
-        do_sample=True,      # Enable sampling for more varied outputs
-        temperature=temperature,     # Control randomness (lower = more focused)
+        max_new_tokens=tokens,  
+        do_sample=True,      
+        temperature=temperature,
         top_p=top_p,
         repetition_penalty=repetition_penalty,
         stopping_criteria=stopping_criteria

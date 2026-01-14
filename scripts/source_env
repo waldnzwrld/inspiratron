@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+
+# Use set -a to automatically export all variables
+set -a
+source .env
+set +a

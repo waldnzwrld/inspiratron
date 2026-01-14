@@ -2,10 +2,6 @@
 
 set -e
 
-# Use set -a to automatically export all variables
-set -a
-source .env
-set +a
-
+. ./scripts/source_env
 poetry run python -m inspiratron
 
