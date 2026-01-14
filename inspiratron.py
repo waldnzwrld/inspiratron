@@ -7,7 +7,6 @@ tool_prompt = initial_prompt(input_text)
 tool_calls = generate_tool_calls(tool_prompt)
 
 combined_prompt = generate_prompt_from_tools(tool_calls)
-print(combined_prompt)
 
 generated_text = generate_response(combined_prompt, 100, 0.7, 0.9, 1.2, ["\n\n", "Quote:"])
 if not judge_response(combined_prompt, generated_text):

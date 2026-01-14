@@ -47,10 +47,10 @@ def generate_prompt_from_tools(tool_calls: list) -> str:
 
                 headlines.append(content)
 
-    print(headlines)
     headlines_section = "\n".join(f"- {h}" for h in headlines)
     quotes_section = "\n".join(f'"{q}" - {a}' for a, q in quotes.items())
 
+    print(f"Headlines:\n{headlines_section}\n\nQuotes:\n{quotes_section}\n\n\n")
 
     combined_prompt = f"""Headlines:
 - Markets drop amid global uncertainty as investors react to trade tensions.
