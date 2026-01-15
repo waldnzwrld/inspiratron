@@ -1,4 +1,4 @@
-from prompts import initial_prompt, generate_prompt_from_tools
+from prompts import generate_prompt_from_tools, initial_prompt
 from task import generate_response, generate_tool_calls, judge_response
 
 input_text = "give me some inspirational motivation based on famous quotes to help me navigate the current events in the news headlines today"
@@ -7,9 +7,12 @@ tool_calls = generate_tool_calls(tool_prompt)
 
 combined_prompt = generate_prompt_from_tools(tool_calls)
 
-generated_text = generate_response(combined_prompt, 100, 0.7, 0.9, 1.2, ["\n\n", "  ", "Headlines", "Quotes"])
+generated_text = generate_response(
+    combined_prompt, 100, 0.7, 0.9, 1.2, ["\n\n", "  ", "Headlines", "Quotes"]
+)
 if not judge_response(combined_prompt, generated_text):
-    generated_text = generate_response(combined_prompt, 100, 0.7, 0.9, 1.2, ["\n\n", "  ", "Headlines", "Quotes"])
+    generated_text = generate_response(
+        combined_prompt, 100, 0.7, 0.9, 1.2, ["\n\n", "  ", "Headlines", "Quotes"]
+    )
 
 print(generated_text)
-

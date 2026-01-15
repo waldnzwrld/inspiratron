@@ -1,5 +1,5 @@
+from tool_calls import fetch_news_headlines, fetch_quote
 
-from tool_calls import fetch_quote, fetch_news_headlines
 
 def initial_prompt(input_text: str) -> str:
     return f"""You are an assistant that responds with exactly one tool call.
@@ -20,30 +20,30 @@ def initial_prompt(input_text: str) -> str:
     Query: {input_text}
     Response:"""
 
-def generate_prompt_from_tools(tool_calls: list) -> str:
 
+def generate_prompt_from_tools(tool_calls: list) -> str:
     news_resp = None
     headlines = []
-    quotes = {} 
+    quotes = {}
     for tool in tool_calls:
-        if 'TOOL' in tool:
+        if "TOOL" in tool:
             # strip the tool name from the output
-            tool_call = tool.split(':')[1].strip()
-            if 'fetch_quote' in tool_call:
+            tool_call = tool.split(":")[1].strip()
+            if "fetch_quote" in tool_call:
                 quotes[fetch_quote()[0]] = fetch_quote()[1]
-            elif 'fetch_headlines' in tool_call:
+            elif "fetch_headlines" in tool_call:
                 if news_resp is None:
                     news_resp = fetch_news_headlines()
                 index = len(headlines)
-                content = news_resp[index]['content']
+                content = news_resp[index]["content"]
                 # Strip suffix before duplicate check
-                if content and '[+' in content:
-                   content = content[:content.rfind('[+')]
+                if content and "[+" in content:
+                    content = content[: content.rfind("[+")]
                 while content is None or content in headlines:
-                   index += 1
-                   content = news_resp[index]['content']
-                   if content and '[+' in content:
-                      content = content[:content.rfind('[+')]
+                    index += 1
+                    content = news_resp[index]["content"]
+                    if content and "[+" in content:
+                        content = content[: content.rfind("[+")]
 
                 headlines.append(content)
 
@@ -72,7 +72,7 @@ def generate_prompt_from_tools(tool_calls: list) -> str:
 
 
 def generate_judgement_prompt(prompt: str, response: str) -> str:
-    #DO NOT TOUCH THIS, ONLY MAKE CHANGES TO OTHER PROMPTS
+    # DO NOT TOUCH THIS, ONLY MAKE CHANGES TO OTHER PROMPTS
     return f"""Given a prompt and response, decide if the response correctly follows the prompt's instructions.
 
     Prompt: {prompt}
@@ -83,4 +83,3 @@ def generate_judgement_prompt(prompt: str, response: str) -> str:
     If the response correctly follows the prompt's instructions, answer 'pass'.
     
     Answer:"""
-

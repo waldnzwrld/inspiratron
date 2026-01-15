@@ -1,9 +1,11 @@
-
-from huggingface_hub import login
-from transformers import AutoTokenizer, AutoModelForCausalLM
 import os
+
 import torch
+from huggingface_hub import login
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
 from prompts import generate_judgement_prompt
+
 token = os.environ["HFT"]
 login(token)
 
@@ -20,14 +22,10 @@ use_local_only = not force_download
 # First try with local_files_only=True, fall back to download if needed
 try:
     tokenizer = AutoTokenizer.from_pretrained(
-        model_name, 
-        local_files_only=use_local_only,
-        force_download=force_download
+        model_name, local_files_only=use_local_only, force_download=force_download
     )
     model = AutoModelForCausalLM.from_pretrained(
-        model_name, 
-        local_files_only=use_local_only,
-        force_download=force_download
+        model_name, local_files_only=use_local_only, force_download=force_download
     )
 except OSError as e:
     if use_local_only:
@@ -39,46 +37,65 @@ except OSError as e:
     else:
         raise
 
-def generate_response(prompt: str, tokens: int, temperature: float, top_p: float, repetition_penalty: float, stop_strings: list[str] =[]) -> str: 
-    
+
+def generate_response(
+    prompt: str,
+    tokens: int,
+    temperature: float,
+    top_p: float,
+    repetition_penalty: float,
+    stop_strings: list[str] = [],
+) -> str:
+
     input_ids = tokenizer.encode(prompt, return_tensors="pt")
 
     outputs = model.generate(
         input_ids,
-        max_new_tokens=tokens,  
-        do_sample=True,      
+        max_new_tokens=tokens,
+        do_sample=True,
         temperature=temperature,
         top_p=top_p,
         repetition_penalty=repetition_penalty,
         stop_strings=stop_strings if stop_strings else None,
-        tokenizer=tokenizer
+        tokenizer=tokenizer,
     )
 
     # Decode only the newly generated tokens (skip the input prompt)
-    generated_text = tokenizer.decode(outputs[0][input_ids.shape[1]:], skip_special_tokens=True)
+    generated_text = tokenizer.decode(
+        outputs[0][input_ids.shape[1] :], skip_special_tokens=True
+    )
     return generated_text
+
 
 def judge_response(prompt: str, response: str) -> bool:
     judgement_prompt = generate_judgement_prompt(prompt, response)
-    judgement = generate_response(judgement_prompt, 5, 0.2, 0.9, 1.2, stop_strings=["\n"])
+    judgement = generate_response(
+        judgement_prompt, 5, 0.2, 0.9, 1.2, stop_strings=["\n"]
+    )
     if judgement.strip().lower() == "pass":
         return True
     else:
         return False
 
+
 def generate_tool_calls(prompt: str) -> list[str]:
     tool_calls = []
     for _ in range(NUM_CALLS):
-        tool_calls.append(generate_response(prompt, 10, 0.5, 0.9, 1.2, stop_strings=["]", "\n"]))
+        tool_calls.append(
+            generate_response(prompt, 10, 0.5, 0.9, 1.2, stop_strings=["]", "\n"])
+        )
 
     while len(set(tool_calls)) == 1:
-        tool_calls[-1] = generate_response(prompt, 10, 0.5, 0.9, 1.2, stop_strings=["]", "\n"])
-    
+        tool_calls[-1] = generate_response(
+            prompt, 10, 0.5, 0.9, 1.2, stop_strings=["]", "\n"]
+        )
+
     for i, tool_call in enumerate(tool_calls):
         while not judge_response(prompt, tool_call):
-            tool_call = generate_response(prompt, 10, 0.5, 0.9, 1.2, stop_strings=["]", "\n"])
+            tool_call = generate_response(
+                prompt, 10, 0.5, 0.9, 1.2, stop_strings=["]", "\n"]
+            )
 
         tool_calls[i] = tool_call
-
 
     return tool_calls
